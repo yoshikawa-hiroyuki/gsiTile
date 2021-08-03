@@ -23,8 +23,8 @@ class GSITile(object):
   }
   
 
-  def __init__(self, lat0, lat1, lon0, lon1, tmpdir='tmp', level=16,
-               tile='seamlessphoto'):
+  def __init__(self, lat0, lat1, lon0, lon1, level=16,
+               tile='seamlessphoto', tmpdir='tmp'):
     # zoomlevel
     self.tile_level = level
 
@@ -239,7 +239,7 @@ if __name__ == "__main__":
   lon = [138.1776949697821, 138.19938069275926]
   pid = os.getpid()
   wkdir = os.path.join("..", "temp", str(pid))
-  gsiTile = GSITile(lat[0], lat[1], lon[0], lon[1], wkdir, level)
+  gsiTile = GSITile(lat[0], lat[1], lon[0], lon[1], level, wkdir)
   gsiTile.getTiles()
   img = gsiTile.mergeImage()
   gsiTile.saveImage(img, '{}.jpg'.format(pid))

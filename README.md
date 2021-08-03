@@ -39,12 +39,12 @@ https://cyberjapandata.gsi.go.jp/xyz/{type}/{z}/{x}/{y}.{ext}
 import gsiTile
 
 # GSITileインスタンス作成
-gsiTile = gsiTile.GSITile(lat0, lat1, lon0, lon1, tmpdir, level, ttype)
+gsiTile = gsiTile.GSITile(lat0, lat1, lon0, lon1, tmpdir, level, tile)
 # lat0, lat1: [度, 分, 秒](DMS) または 度(DD)
 # lon0, lon1: [度, 分, 秒](DMS) または 度(DD)
 # tmpdir: 作業ディレクトリ(省略時='tmp')
 # level: ズームレベル(省略時=16)
-# ttype: タイルの種類(省略時='seamlessphoto')
+# tile: タイルの種類(省略時='seamlessphoto')
 
 # 地理院タイル取得(作業ディレクトリ配下にタイル画像が全て保存される)
 gsiTile.getTiles()
