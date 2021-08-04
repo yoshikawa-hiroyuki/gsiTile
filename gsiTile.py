@@ -235,11 +235,11 @@ if __name__ == "__main__":
   level = 18
   #lat = [[35,40,6e-7], [35,44,59.999998921368004]]
   #lon = [[139,44,59.9999985618], [139,52,30.0000009]]
-  lat = [36.639413033456435, 36.659306735128496]
-  lon = [138.1776949697821, 138.19938069275926]
+  lat = [35.581, 35.587]
+  lon = [139.636, 139.643]
   pid = os.getpid()
-  wkdir = os.path.join("..", "temp", str(pid))
-  gsiTile = GSITile(lat[0], lat[1], lon[0], lon[1], level, wkdir)
+  wkdir = os.path.join("temp", str(pid))
+  gsiTile = GSITile(lat[0], lat[1], lon[0], lon[1], level, tmpdir=wkdir)
   gsiTile.getTiles()
   img = gsiTile.mergeImage()
   gsiTile.saveImage(img, '{}.jpg'.format(pid))
