@@ -3,7 +3,7 @@
 # gsiTile
 #  (c)2017-2021 FUJITSU LIMITED
 #
-import sys, os
+import sys, os, shutil
 import math
 import urllib.request, urllib.error
 import numpy as np
@@ -231,20 +231,59 @@ class GSITile(object):
   def saveImage(self, img, fname):
     img.save(fname)
 
+
+usage_msg = '''gsiTile.py [--tile map_type] [--level L]
+  --lat0 min_lat_dd --lat1 max_lat_dd --lon0 min_lon_dd --lon1 max_lon_dd
+  [--temp temp_dir] [--out outfile] [--clean]
+'''
+
 if __name__ == "__main__":
-  level = 18
-  #lat = [[35,40,6e-7], [35,44,59.999998921368004]] # DMS
-  #lon = [[139,44,59.9999985618], [139,52,30.0000009]] # DMS
-  lat = [35.581, 35.587] # DD
-  lon = [139.636, 139.643] # DD
+  import argparse
+  parser = argparse.ArgumentParser(description='gather and merge GSI-tiles',
+                                   usage=usage_msg)
+  parser.add_argument('--tile', type=str,
+                      help='tile type(std|pale|blank|english|seamlessphoto)',
+                      default='seamlessphoto')
+  parser.add_argument('--level', help='zoom level(<=18)', type=int, default=16)
+  parser.add_argument('--lat0', help='lower bound of latitude(DD)', type=float)
+  parser.add_argument('--lat1', help='upper bound of latitude(DD)', type=float)
+  parser.add_argument('--lon0', help='lower bound of longitude(DD)', type=float)
+  parser.add_argument('--lon1', help='upper bound of longitude(DD)', type=float)
+  parser.add_argument('--temp', help='temporary directory', type=str,
+                      default='temp')
+  parser.add_argument('--out', help='output filename', type=str,
+                      default='output.png')
+  parser.add_argument('--clean', help='cleanup temporary files',
+                      action="store_true")
+  args = parser.parse_args()
+  if not args.lat0 or not args.lat1 or not args.lon0 or not args.lon1:
+    print('ERROR: insufficient specification of lat or lon, exit.')
+    print('usage: python3 ' + usage_msg)
+    sys.exit(1)
+
+  tile = args.tile
+  level = args.level
+  lat = [args.lat0, args.lat1]
+  lon = [args.lon0, args.lon1]
+
   # workdir : ./temp/{pid}
   pid = os.getpid()
-  wkdir = os.path.join("temp", str(pid))
+  wkdir = os.path.join(args.temp, str(pid))
+  
   # gathering GSI tiles
-  gsiTile = GSITile(lat[0], lat[1], lon[0], lon[1], level, tmpdir=wkdir)
+  gsiTile = GSITile(lat[0], lat[1], lon[0], lon[1], level, tile, wkdir)
   gsiTile.getTiles()
+  
   # merge tiles, crop and save
   img = gsiTile.mergeImage()
-  gsiTile.saveImage(img, '{}.jpg'.format(pid))
-  print(pid, 'done.')
+  gsiTile.saveImage(img, args.out)
 
+  # cleanup work files
+  if args.clean:
+    shutil.rmtree(wkdir)
+  else:
+    print('INFO: temporary files in {}'.format(wkdir))
+  
+  print('INFO:', args.out, 'created.')
+  sys.exit(0)
+  
