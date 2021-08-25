@@ -1,5 +1,6 @@
 # gsiTile
 国土地理院の地理院タイルを取得するPythonコードです。
+指定された緯度経度範囲に含まれる地理院タイル画像を取得し、結合した上で緯度経度範囲に合わせてクロップした画像を生成します。
 
 ## 地理院タイルとは
 [地理院タイル](https://maps.gsi.go.jp/development/ichiran.html)は、[国土地理院](https://www.gsi.go.jp)が配信するタイル状の地図データです。
@@ -54,4 +55,24 @@ img = gsiTile.mergeImage()
 
 # イメージファイルへの保存
 gsiTile.saveImage(img, 'image.jpg')
+```
+### コマンドライン
+Usage
+```
+python3 gsiTile.py [--tile map_type] [--level Level]
+  --lat0 min_lat_dd --lat1 min_lat_dd --lon0 min_lon_dd --lon1 max_lon_dd
+  [--temp temp_dir] [--out temp_dir] [--clean]
+```
+
+オプション説明
+```
+  --tile map_type       tile type(std|pale|blank|english|seamlessphoto)
+  --level Level         zoom level(<=18)
+  --lat0 min_lat_dd     lower bound of latitude(DD)
+  --lat1 min_lat_dd     upper bound of latitude(DD)
+  --lon0 min_lon_dd     lower bound of longitude(DD)
+  --lon1 max_lon_dd     upper bound of longitude(DD)
+  --temp temp_dir       temporary directory
+  --out temp_dir        output filename
+  --clean               cleanup temporary files
 ```
